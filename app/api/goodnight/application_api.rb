@@ -17,7 +17,7 @@ module Goodnight
       end
 
       def authenticate!
-        error!('Unathorized', 401) if current_user.nil?
+        error!('Unathorized or user doesnt exist', 401) if current_user.nil?
       end
     end
   end
