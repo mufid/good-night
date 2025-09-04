@@ -1,0 +1,48 @@
+x-app: &app
+  image: gn-head
+  build: .
+  environment: &env
+    RAILS_ENV: ${RAILS_ENV:-development}
+    DATABASE_URL: postgres://postgres:@postgres:5432
+
+  volumes: &volumes
+    - .:/app
+    - bundle34:/usr/local/bundle
+  tmpfs:
+    - /tmp
+    - /app/tmp/pids
+
+services:
+  shell:
+    <<: *app
+    command: bin/rails console
+    depends_on:
+      - postgres
+    environment:
+      <<: *env
+      DISABLE_SPRING: true
+
+  web:
+    <<: *app
+    command: bin/rails server -b 0.0.0.0 -p 3000
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+
+  postgres:
+    image: postgres:17.4-alpine
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    command: ["postgres", "-c", "log_statement=all"]
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+
+volumes:
+  bundle34:
+  postgres:
+
