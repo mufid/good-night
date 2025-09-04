@@ -19,6 +19,17 @@ module Goodnight
       def authenticate!
         error!('Unathorized or user doesnt exist', 401) if current_user.nil?
       end
+      def to_be_implemented!
+        error!('Not yet implemented', 405)
+      end
+
+      def failure_with_data(model)
+        status 422
+        {
+          error: 'Invalid data',
+          invalids: model.errors.to_a
+        }
+      end
     end
   end
 end

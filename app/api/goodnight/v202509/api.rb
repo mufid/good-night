@@ -1,6 +1,7 @@
 
 module Goodnight::V202509
   class API < ::Goodnight::ApplicationAPI
+    mount Sleeps
     mount Users
 
     add_swagger_documentation \
