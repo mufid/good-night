@@ -26,7 +26,12 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
 gem "solid_queue"
+# Read solid_cable configuration from .env
+gem 'dotenv', group: [:development, :test]
 gem "solid_cable"
+
+# UI for Solid Queue
+gem "mission_control-jobs"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
