@@ -19,7 +19,13 @@ module Goodnight::V202509
 
       route_param :id do
         post 'clock_out' do
-          to_be_implemented!
+          authenticate!
+          sleep = current_user.sleeps.in_progress.where(id: params[:id]).take!
+          clock_out = ::Sleeps::ClockOut.new(sleep: sleep)
+          return failure_with_data(clock_out) if !clock_out.save
+
+          status :ok
+          present sleep, with: Entities::Sleep
         end
       end
 

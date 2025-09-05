@@ -51,5 +51,25 @@ RSpec.describe Goodnight::V202509::Sleeps, type: :request do
       end
     end
   end
-  
+
+  describe 'GET /api/2025-09/sleeps/:id/clock_out' do
+    context 'with random session' do
+      it 'responded with 404' do
+        post '/api/2025-09/sleeps/123/clock_out', headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'with sleep session' do
+      let!(:sleep) { create(:sleep, :in_progress, user: user) }
+      it 'clocked out successfully' do
+        expect(Sleep.in_progress.count).to eq 1
+        post "/api/2025-09/sleeps/#{sleep.id}/clock_out", headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(response).to have_json_path('id').with_value(sleep.id)
+        expect(Sleep.in_progress.count).to eq 0
+      end
+    end
+  end
+
 end
