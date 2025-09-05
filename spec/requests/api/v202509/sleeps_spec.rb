@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Goodnight::V202509::Sleeps, type: :request do
   let(:user) { create(:user) }
   let(:headers) { { 'Authorization' => basic_auth_header(user) } }
-  describe 'GET /api/v2025-09/sleeps/clock_in' do
+  describe 'GET /api/2025-09/sleeps/clock_in' do
     context 'with no sleep session' do
       it 'increases sleep session count' do
         expect {
@@ -31,7 +31,25 @@ RSpec.describe Goodnight::V202509::Sleeps, type: :request do
         expect(response).to have_http_status(422)
         expect(Sleep.count).to eq(1)
       end
-
     end
   end
+
+  describe 'GET /api/2025-09/sleeps/current' do
+    context 'with no sleep session' do
+      it 'responded with 404' do
+        get '/api/2025-09/sleeps/current', headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'with sleep session' do
+      let!(:sleep) { create(:sleep, :in_progress, user: user) }
+      it 'responded with actual sleep session' do
+        get '/api/2025-09/sleeps/current', headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(response).to have_json_path('id').with_value(sleep.id)
+      end
+    end
+  end
+  
 end

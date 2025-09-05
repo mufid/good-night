@@ -31,5 +31,9 @@ module Goodnight
         }
       end
     end
+
+    rescue_from ActiveRecord::RecordNotFound do
+      error!('Data not found', 404)
+    end
   end
 end

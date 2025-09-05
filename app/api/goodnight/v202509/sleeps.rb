@@ -2,7 +2,6 @@
 module Goodnight::V202509
   class Sleeps < ::Goodnight::ApplicationAPI
     resources :sleeps do
-      desc 'Clock in for sleeping. Notice: You must clock out previous sleep (if any) before clocking in for new sleep'
       post 'clock_in' do
         authenticate!
         clock_in = ::Sleeps::ClockIn.new(user: current_user)
@@ -12,9 +11,10 @@ module Goodnight::V202509
         present clock_in.sleep, with: Entities::Sleep
       end
 
-      desc 'Get current clocked-in sleep (if any)'
       get 'current' do
-        to_be_implemented!
+        authenticate!
+        sleep = current_user.sleeps.in_progress.take!
+        present sleep, with: Entities::Sleep
       end
 
       route_param :id do
@@ -22,6 +22,7 @@ module Goodnight::V202509
           to_be_implemented!
         end
       end
+
     end
   end
 end
