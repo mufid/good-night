@@ -69,6 +69,9 @@ RSpec.describe Goodnight::V202509::Sleeps, type: :request do
         expect(response).to have_json_path('id').with_value(sleep.id)
         expect(Sleep.in_progress.count).to eq 0
         expect(sleep.reload.duration_minutes).to eq(8 * 60)
+
+        expect(sleep.week).to eq 8.hours.ago.to_date.cweek
+        expect(sleep.year).to eq 8.hours.ago.to_date.year
       end
     end
 

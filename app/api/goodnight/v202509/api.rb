@@ -2,6 +2,7 @@
 module Goodnight::V202509
   class API < ::Goodnight::ApplicationAPI
     mount Sleeps
+    mount Timelines
     mount Users
     mount UserFollowings
 

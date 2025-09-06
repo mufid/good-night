@@ -12,7 +12,11 @@ module Sleeps
       updated_rows =
         Sleep.where(id: sleep.id)
              .where(clocked_out_at: nil)
-             .update_all(clocked_out_at: Time.zone.now)
+             .update_all(
+               clocked_out_at: Time.zone.now,
+               week: Arel.sql("extract('week' from clocked_in_at)"),
+               year: Arel.sql("extract('year' from clocked_in_at)")
+             )
 
       sleep.reload
       sleep.ensure_duration

@@ -3,25 +3,16 @@ x-app: &app
   build: .
   environment: &env
     RAILS_ENV: ${RAILS_ENV:-development}
-    DATABASE_URL: postgres://postgres:@postgres:5432
+    RAILS_DB_HOST: postgres
+    SOLID_QUEUE_IN_PUMA: true
 
   volumes: &volumes
     - .:/app
-    - bundle34:/usr/local/bundle
   tmpfs:
     - /tmp
     - /app/tmp/pids
 
 services:
-  shell:
-    <<: *app
-    command: bin/rails console
-    depends_on:
-      - postgres
-    environment:
-      <<: *env
-      DISABLE_SPRING: true
-
   web:
     <<: *app
     command: bin/rails server -b 0.0.0.0 -p 3000
@@ -43,6 +34,5 @@ services:
       - "5432:5432"
 
 volumes:
-  bundle34:
   postgres:
 

@@ -18,7 +18,12 @@ class CursorArray
       return
     end
 
-    cursor = self.data.last.send(data_klazz.cursor_field).to_i
+    cursor =
+      if data_klazz.cursor_type == :custom
+        self.data.last.send(data_klazz.cursor_field)
+      else
+        self.data.last.send(data_klazz.cursor_field).to_i
+      end
 
     if data.after(cursor).any?
       self.has_more = true
