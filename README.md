@@ -16,6 +16,9 @@ You can run the application by using `docker-compose`:
   with Rails' built-in form validation
 - **Service Pattern:** on complex operations requiring more than one
   model, service is used.
+- **API Versioning:** Use date for API versioning instead of a number
+  (Shopify Style).
+  - Read more: [Shopify API Versioning](https://shopify.dev/docs/api/usage/versioning)
 
 ## Performance Consideration
 
