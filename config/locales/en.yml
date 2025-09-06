@@ -7,6 +7,7 @@ en:
           attributes:
             base:
               already_followed: 'This user is already followed'
+              can_not_follow_self: 'Can not follow yourself!'
         user_followings/unfollow:
           attributes:
             base:
