@@ -3,6 +3,14 @@ en:
   activemodel:
     errors:
       models:
+        user_followings/follow:
+          attributes:
+            base:
+              already_followed: 'This user is already followed'
+        user_followings/unfollow:
+          attributes:
+            base:
+              already_unfollowed_or_invalid: 'Already unfollowed or never follows this user'
         sleeps/clock_in:
           attributes:
             base:

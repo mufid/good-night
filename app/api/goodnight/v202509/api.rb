@@ -3,6 +3,7 @@ module Goodnight::V202509
   class API < ::Goodnight::ApplicationAPI
     mount Sleeps
     mount Users
+    mount UserFollowings
 
     add_swagger_documentation \
       add_version: true,
