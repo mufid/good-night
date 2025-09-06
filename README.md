@@ -7,3 +7,19 @@ Record your sleep!
 You can run the application by using `docker-compose`:
 
     docker-compose up
+
+## Architecture
+
+- **Grape:** API is implemented within Grape
+- **Rails:** All other components is using standard Rails pattern
+- **ActiveModel:** All form submission is processed with ActiveModel
+  with Rails' built-in form validation
+- **Service Pattern:** on complex operations requiring more than one
+  model, service is used.
+
+## Performance Consideration
+
+- **Cursor instead of pagination:** It is well-documented that
+  cursor is preferred on large rows instead of pagination. This is
+  heavily inspired by Shopify and Stripe.
+  - Read more: [On Cursor Performance](https://shopify.engineering/pagination-relative-cursors)
