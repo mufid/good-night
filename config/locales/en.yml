@@ -7,4 +7,9 @@ en:
           attributes:
             base:
               sleep_in_progress: 'A sleep already in progress. View current sleep progress with /current and ends it with /:id/clock_out'
+        sleeps/clock_out:
+          attributes:
+            base:
+              already_clocked_out: 'Tried to clock out a sleep that has been already clocked out!'
+              minimum_sleep_one_minute: 'Minimum sleep duration is one minute!'
 

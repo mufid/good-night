@@ -68,8 +68,23 @@ RSpec.describe Goodnight::V202509::Sleeps, type: :request do
         expect(response).to have_http_status(:ok)
         expect(response).to have_json_path('id').with_value(sleep.id)
         expect(Sleep.in_progress.count).to eq 0
+        expect(sleep.reload.duration_minutes).to eq(8 * 60)
       end
     end
+
+    context 'with too short sleep session' do
+      let!(:sleep) { create(:sleep, :in_progress, user: user, clocked_in_at: 30.seconds.ago) }
+      it 'wont clocked out and return an error' do
+        expect(Sleep.in_progress.count).to eq 1
+        post "/api/2025-09/sleeps/#{sleep.id}/clock_out", headers: headers
+        expect(sleep.reload.clocked_out_at).to be_nil
+
+        expect(response).to have_http_status(422)
+        expect(response).to have_json_path('invalids', 0).with_value('Minimum sleep duration is one minute!')
+        expect(Sleep.in_progress.count).to eq 1
+      end
+    end
+
   end
 
 end
