@@ -121,3 +121,19 @@ use `after=499957-1923`
       -H 'authorization: Basic MTp1bmRlZmluZWQ='
 
 
+## Performance: Aggregated Summary
+
+Some users may want to retrieve all "pages", just to summarize the entire data of their friends. This is
+inefficient. Instead, we already provided aggregated summary. This is very efficient, as it doesn't calculate
+expensive computation on-the-fly. It runs only once a month.
+
+A recurring background job, `MonthlySleepAggregatorJob`, will run each month at the 2nd day. This allow user to see
+following sleep aggregated data (sleeps count and total duration minutes). We only run the aggregation for the previous
+month, as it is guaranteed that no one can backdate the sleep data.
+
+To retrieve aggregated summary, use `timeline_monthly` endpoint:
+
+    $ curl -X 'GET' \
+      'http://localhost:3000/api/2025-09/users/timeline_monthly?date_month=2025-08-01' \
+      -H 'accept: application/json' \
+      -H 'authorization: Basic MTp1bmRlZmluZWQ='

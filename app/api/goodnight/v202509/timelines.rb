@@ -13,6 +13,17 @@ module Goodnight::V202509
         puts sleeps.explain(:analyze, :verbose).inspect
         present CursorArray.new(sleeps), with: Entities::WithCursor, entry: Entities::Sleep
       end
+      params do
+        optional :date_month, type: String
+        optional :after, type: Integer
+      end
+      get 'timeline_monthly' do
+        authenticate!
+        date_month = Date.parse(params[:date_month] || 1.month.ago.to_date.to_s).to_date.beginning_of_month
+        sleep_aggregated = MonthlySleep.where(month: date_month).from_user(current_user).after(params[:after])
+
+        present CursorArray.new(sleep_aggregated), with: Entities::WithCursor, entry: Entities::MonthSleep
+      end
     end
   end
 end
