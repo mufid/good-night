@@ -41,7 +41,7 @@ user id, and blank password. Here are some core endpoints:
 
 A random data dumps are created after `bin/rails db:seed`
 
-## Performance Consideration and Strategies
+## Performance Consideration and Strategies: Summary
 
 - **Cursor instead of pagination:** It is well-documented that
   cursor is preferred on large rows instead of pagination. This is
@@ -53,6 +53,29 @@ A random data dumps are created after `bin/rails db:seed`
   more data.
 - **Main "Timeline" functionality:** It is segmented by year-week. It requires date as parameter. This way,
   the user can see current week (and practically, any week) of the timeline, as the performance is very fast.
+
+## Performance and Scalability: Indexes Used
+
+We use composite index strategy to ensure all required data processed fast. For details of what indexes are available,
+see [db/schema.rb](https://github.com/mufid/good-night/blob/main/db/schema.rb)
+
+**List of my sleeps:** Following indexes are used for retrieving user's own sleep. Notice that we also add partial index
+on `clocked_out_at` to ensure that we only have 1 in-progress sleep at any time.
+
+    t.index ["user_id", "clocked_in_at", "duration_minutes"], name: "index_sleeps_on_user_id_and_clocked_in_at_and_duration_minutes"
+    t.index ["user_id"], name: "index_sleeps_ensure_single_active_session", unique: true, where: "(clocked_out_at IS NULL)"
+
+**"Timeline" processing:** Following indexes are used for processing "timeline", listing all followed users' sleep.
+
+    t.index ["year", "week", "duration_minutes", "user_id"], name: "index_sleeps_on_year_and_week_and_duration_minutes_and_user_id"
+    t.index ["user_id", "user_following_id"], name: "index_user_followings_on_user_id_and_user_following_id", unique: true
+
+**Following-followers data:** Composite indexes are used to ensure we retrieve followings and followers data very fast.
+
+    t.index ["user_following_id"], name: "index_user_followings_on_user_following_id"
+    t.index ["user_id", "user_following_id"], name: "index_user_followings_on_user_id_and_user_following_id", unique: true
+    t.index ["user_id"], name: "index_user_followings_on_user_id"
+
 
 ## Performance and Scalability: "Timeline"
 
